@@ -1,0 +1,89 @@
+{
+ "cells": [
+  {
+   "cell_type": "markdown",
+   "id": "3477a39c",
+   "metadata": {},
+   "source": [
+    "---\n",
+    "title: \"Customer Lead Dataset Analysis\"\n",
+    "format: html\n",
+    "author: Baidurya Bhattacharyya\n",
+    "date: now\n",
+    "---\n",
+    "\n",
+    "# Abstract\n",
+    "\n",
+    "A customer-lead time-series dataset, available at \\\\url{URL} is presented with time and quality of different acquired leads along with many client-side and technical-side features that are suspected to affect outcome quality. We analyze the data in three stages: First, we analyze the change of lead quality through time. Second, we narrow down on the factors that affect lead quality most significantly through statistical criteria and models. Finally, we propose a scheme of growth for the advertiser to generate more and better leads.\n",
+    "\n",
+    "## Introduction\n",
+    "\n",
+    "A 25-column dataset on customer-leads is provided\n",
+    "\n",
+    "### Preprocessing\n",
+    "\n",
+    "We prescribe some ideas as to how to handle different variables in our analysis process. We also recode a few (mostly into integers) for ease of analysis, interpretation and communication.\n",
+    "\n",
+    "1.  `LeadCreated`: Kept intact.\n",
+    "2.  `FirstName`: Dropped. (Note: Labelling generic or spammy names to predict lead quality could be a useful future enhancement.)\n",
+    "3.  `Email`: Kept intact. Interactions can be grouped by email, assuming an entity consistently uses the same email.\n",
+    "4.  `VendorLeadID`: Kept intact to group multiple interaction events together.\n",
+    "5.  `CallStatus`: Recoded into a new variable called `CallStatusNo` as follows (where higher scores indicate greater \"closeness\" to a closed lead):\n",
+    "    - `NaN`: Kept intact.\n",
+    "    - `Unable to contact - Bad Contact Information`: 1 (Lowest rung of quality; unusable lead).\n",
+    "    - `Contacted - Invalid Profile`: 2 (Nearly hopeless, unless prospective customers decline with false excuses).\n",
+    "    - `Contacted - Doesn't Qualify`: 3 (Some potential for future interest).\n",
+    "    - `EP Sent`: 4\n",
+    "    - `EP Received`: 5\n",
+    "    - `EP Confirmed`: 6\n",
+    "    - `Closed`: 7 (Highest level of success).\n",
+    "6.  `WidgetName`: First 3 common segments removed. The next 3 segments are split and expanded into new columns: `FormPgsCnt`, `Fieldset`, and `ColorDesign`.\n",
+    "7.  `PublisherZoneName`: First segment (common display-size info) removed. The second segment (position) is recoded into a binary variable (0/1) since it only has 2 alternatives.\n",
+    "8.  `PublisherCampaignName`: Recoded into a binary variable (2 alternatives).\n",
+    "9.  `AddressScore`: Missing values imputed via linear regression using other variables. Serves as a predictor for `CallStatusNo`, as higher scores reflect consumer sincerity.\n",
+    "10. `PhoneScore`: Missing values imputed via linear regression using other variables. Serves as a predictor for `CallStatusNo`, as higher scores reflect consumer sincerity.\n",
+    "11. `AdvertiserCampaignName`: Recoded into a binary variable.\n",
+    "12. `State`: Kept intact.\n",
+    "13. `Debt level`: Converted into an ordinal variable ranging from 1 to 7. (An alternative approach using class means can be considered, carefully handling the right open-ended final class).\n",
+    "14. `IP Address`: Dropped. (Filtering spammy or malevolent IPs can be tested in advanced stages).\n",
+    "15. `Partner`: Kept intact.\n",
+    "16. Rest of the columns (`ReferralDomain`, `MarketingCampaign`, `AdGroup`, `Keyword`, `SearchQuery`, `Referral URL`, `ReferralURL Parameters`, `LandingPageURL`, `LandingPageURL parameters`): Dropped for the time being."
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "id": "c6ea8195",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import pandas as pd\n",
+    "import numpy as np\n",
+    "\n",
+    "rawdf = pd.read_csv('Analyst_case_study_dataset_1_(1).csv')"
+   ]
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3",
+   "path": "/usr/share/jupyter/kernels/python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.13.15"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

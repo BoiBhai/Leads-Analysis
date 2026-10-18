@@ -1,0 +1,13 @@
+---
+title: "Customer Lead Dataset Analysis"
+format: html
+author: Baidurya Bhattacharyya
+date: now
+---
+
+**Abstract**
+
+A customer-lead time-series dataset, available at \\url{URL} is presented with time and quality of different acquired leads along with many client-side and technical-side features that are suspected to affect outcome quality. We analyze the data in three stages: First, we analyze the change of lead quality through time. Second, we narrow down on the factors that affect lead quality most significantly through statistical criteria and models. Finally, we propose a scheme of growth for the advertiser to generate more and better leads.
+
+{{< include sec/_intro.qmd >}} {{< include sec/q1.ipynb >}} <!-- {{< include sec/q2.qmd >}}
+{{< include sec/q3.qmd >}} -->

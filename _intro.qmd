@@ -1,0 +1,57 @@
+## Introduction
+
+```{python}
+import pandas as pd
+import numpy as np
+
+rawdf = pd.read_csv('Analyst_case_study_dataset_1.csv')
+```
+
+### Preprocessing
+
+We prescribe some ideas as to how to handle different variables in our analysis process. We also recode a few (mostly into integers) for ease of analysis, interpretation and communication.
+
+1.  `LeadCreated`: Kept intact.
+2.  `FirstName`: Dropped. (Note: Labelling generic or spammy names to predict lead quality could be a useful future enhancement.)
+3.  `Email`: Kept intact. Interactions can be grouped by email, assuming an entity consistently uses the same email.
+4.  `VendorLeadID`: Kept intact to group multiple interaction events together.
+5.  `CallStatus`: Recoded into a new variable called `CallStatusNo` as follows (where higher scores indicate greater "closeness" to a closed lead):
+    - `NaN`: Kept intact.
+    - `Unable to contact - Bad Contact Information`: 1 (Lowest rung of quality; unusable lead).
+    - `Contacted - Invalid Profile`: 2 (Nearly hopeless, unless prospective customers decline with false excuses).
+    - `Contacted - Doesn't Qualify`: 3 (Some potential for future interest).
+    - `EP Sent`: 4
+    - `EP Received`: 5
+    - `EP Confirmed`: 6
+    - `Closed`: 7 (Highest level of success).
+6.  `WidgetName`: First 3 common segments removed. The next 3 segments are split and expanded into new columns: `FormPgsCnt`, `Fieldset`, and `ColorDesign`.
+7.  `PublisherZoneName`: First segment (common display-size info) removed. The second segment (position) is recoded into a binary variable (0/1) since it only has 2 alternatives.
+8.  `PublisherCampaignName`: Recoded into a binary variable (2 alternatives).
+9.  `AddressScore`: Missing values imputed via linear regression using other variables. Serves as a predictor for `CallStatusNo`, as higher scores reflect consumer sincerity.
+10. `PhoneScore`: Missing values imputed via linear regression using other variables. Serves as a predictor for `CallStatusNo`, as higher scores reflect consumer sincerity.
+11. `AdvertiserCampaignName`: Recoded into a binary variable.
+12. `State`: Kept intact.
+13. `Debt level`: Converted into an ordinal variable ranging from 1 to 7. (An alternative approach using class means can be considered, carefully handling the right open-ended final class).
+14. `IP Address`: Dropped. (Filtering spammy or malevolent IPs can be tested in advanced stages).
+15. `Partner`: Kept intact.
+16. Rest of the columns (`ReferralDomain`, `MarketingCampaign`, `AdGroup`, `Keyword`, `SearchQuery`, `Referral URL`, `ReferralURL Parameters`, `LandingPageURL`, `LandingPageURL parameters`): Dropped for the time being.
+
+```{python}
+df = rawdf
+
+df['Date'] = pd.to_datetime(df['LeadCreated'])
+df.drop(columns='LeadCreated', inplace=True)
+```
+
+```{python}
+email = df['Email'].str.strip()
+
+df['EmailUname'] = email.str.split('@', n=1).str[0]
+
+domain = email.str.split('@', n=1).str[1]
+
+df['EmailSite'] = domain.str.rsplit('.', n=1).str[0]
+df['EmailDom'] = domain.str.rsplit('.', n=1).str[1]
+
+df.drop(columns='Email', inplace=True)
+```
